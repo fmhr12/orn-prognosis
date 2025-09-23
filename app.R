@@ -96,7 +96,7 @@ ui <- fluidPage(
                 value = "60, 114"),
 
       # Single toggle for overlaying the overall observed CIF reference curve
-      checkboxInput("showOverallRef", "Reference: overall observed CIF for the local institute", value = FALSE),
+      checkboxInput("showOverallRef", "Overall observed CIF for the local institute", value = FALSE),
 
       actionButton("predictBtn", "Predict & Explain"),
       br(), helpText("")
