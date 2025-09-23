@@ -71,7 +71,7 @@ map_labels <- function(df, label_mapping) {
 # -----------------------
 ui <- fluidPage(
   theme = shinytheme("flatly"),
-  titlePanel("ORN Prognosis Tool"),
+  titlePanel("Osteoradionecrosis Prognosis Tool"),
 
   sidebarLayout(
     sidebarPanel(
@@ -90,7 +90,7 @@ ui <- fluidPage(
       numericInput("Smoking_Pack_per_Year", "Smoking Pack-Year", value = 10, min = 0, max = 200),
 
       # Time selections
-      selectInput("shap_time_point", "Time Point for SHAP",
+      selectInput("shap_time_point", "Time Point for SHAP Force Plot",
                   choices = c("36", "60", "84", "114"), selected = "60"),
       textInput("cif_time_points", "Time Points for CIF Predictions (comma-separated)",
                 value = "60, 114"),
