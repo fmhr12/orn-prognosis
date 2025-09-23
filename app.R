@@ -35,6 +35,9 @@ final_80grid_data <- readRDS(precomputed_path)
 # Overall, ORN Positive, and ORN Negative curves
 mean_cif_data_overall <- readRDS("mean_cif_data_all.rds")
 
+# For SHAP baseline calculation we continue to use the overall data.
+mean_cif_data <- mean_cif_data_overall
+
 # Feature columns expected by the model/grid
 feature_cols <- c(
   "Insurance_Type",
