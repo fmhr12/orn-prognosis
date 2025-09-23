@@ -1,13 +1,13 @@
 library(shiny)
 library(shinythemes)
+library(survival)
 library(riskRegression)
 library(fastshap)
 library(shapviz)
 library(ggplot2)
-library(dplyr)
-library(gower)     # For mixed-type distance calculation
+library(prodlim)
+library(gower)       
 library(plotly)
-library(prodlim) 
 
 # -----------------------
 # Helper: Gower distance from a single row to each row of a DF
@@ -18,20 +18,22 @@ compute_gower_distances <- function(single_row, df_full) {
 }
 
 # -----------------------
-# 1) Load saved model and data
+# 1. Load Final Model
 # -----------------------
-saved_model_path <- "/Users/farazparnia/Desktop/ArticleORNJ_Pred/Apps/App-V6_five-feature (same as V5 but with CIF curve of observed samples as reference)/final_fg_model_update.rds"
+saved_model_path <- "final_fg_model_update.rds"
 final_model <- readRDS(saved_model_path)
 
-# Precomputed SHAP grid (multi-time shap values and feature grid)
-precomputed_path <- "/Users/farazparnia/Desktop/ArticleORNJ_Pred/Apps/App-V6_five-feature (same as V5 but with CIF curve of observed samples as reference)/precomputed_shap_grid_multi_times2.rds"
+# -----------------------
+# 2. Load the PRECOMPUTED final_grid_data (SHAP values)
+# -----------------------
+precomputed_path <- "precomputed_shap_grid_multi_times2.rds"
 final_80grid_data <- readRDS(precomputed_path)
 
-# Overall observed CIF (Aalen–Johansen) to use as reference and SHAP baseline
-mean_cif_data_overall <- readRDS("/Users/farazparnia/Desktop/ArticleORNJ_Pred/Apps/App-V6_five-feature (same as V5 but with CIF curve of observed samples as reference)/mean_cif_data_all.rds")
-
-# For SHAP baseline calculation we continue to use the overall data.
-mean_cif_data <- mean_cif_data_overall
+# -----------------------
+# 3. Load the PRECOMPUTED average CIF data (for reference curves)
+# -----------------------
+# Overall, ORN Positive, and ORN Negative curves
+mean_cif_data_overall <- readRDS("mean_cif_data_all.rds")
 
 # Feature columns expected by the model/grid
 feature_cols <- c(
@@ -251,14 +253,7 @@ server <- function(input, output, session) {
 }
 
 # Run
-if (interactive()) {
-  shinyApp(ui = ui, server = server)
-} else {
-  shiny::runApp(list(ui = ui, server = server),
-                host = "0.0.0.0",
-                port = as.numeric(Sys.getenv("PORT", 10000)))
-}
-
+shinyApp(ui = ui, server = server)
 
 
 
