@@ -20,7 +20,7 @@ compute_gower_distances <- function(single_row, df_full) {
 # -----------------------
 # 1. Load Final Model
 # -----------------------
-saved_model_path <- "final_fg_model_update.rds"
+saved_model_path <- "final_model.rds"
 final_model <- readRDS(saved_model_path)
 
 # -----------------------
@@ -32,7 +32,6 @@ final_80grid_data <- readRDS(precomputed_path)
 # -----------------------
 # 3. Load the PRECOMPUTED average CIF data (for reference curves)
 # -----------------------
-# Overall, ORN Positive, and ORN Negative curves
 mean_cif_data_overall <- readRDS("mean_cif_data_all.rds")
 
 # For SHAP baseline calculation we continue to use the overall data.
