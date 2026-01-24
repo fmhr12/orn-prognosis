@@ -6,7 +6,7 @@ library(fastshap)
 library(shapviz)
 library(ggplot2)
 library(prodlim)
-library(gower)       
+library(gower)        
 library(plotly)
 
 # -----------------------
@@ -103,6 +103,7 @@ ui <- fluidPage(
 
     mainPanel(
       tabsetPanel(
+        # --- TAB 1: Main Results ---
         tabPanel("Results",
                  h4("CIF Curve"),
                  plotlyOutput("plotCIF"),
@@ -112,6 +113,48 @@ ui <- fluidPage(
                  br(),
                  h4("SHAP Force Plot (Approx.)"),
                  plotOutput("forcePlot", height = "300px")
+        ),
+        
+        # --- TAB 2: Information Box (Added) ---
+        tabPanel("How to Use & Scope",
+                 br(),
+                 wellPanel(
+                   h4("How to Use & Scope"),
+                   tags$ul(
+                     tags$li(
+                       tags$strong("Intended Population: "), 
+                       "This tool is designed for adult patients (≥18 years) with Head and Neck Cancer (HNC) treated with curative intensity-modulated radiation therapy (IMRT) receiving ≥45 Gy who have undergone a pre-radiation dental evaluation."
+                     ),
+                     br(),
+                     tags$li(
+                       tags$strong("What the Prediction Represents: "), 
+                       "The tool predicts the individualized cumulative incidence (risk) of developing Osteoradionecrosis (ORN, ClinRad grade ≥1) over time. Importantly, this prediction accounts for ", 
+                       tags$strong("death as a competing risk"), 
+                       ", ensuring that ORN risk is not overestimated."
+                     ),
+                     br(),
+                     tags$li(
+                       tags$strong("Time Horizons: "), 
+                       "The output provides a comprehensive risk trajectory from month 1 to 114 post-radiotherapy. By default, specific risk estimates are highlighted at 60 months and 114 months."
+                     ),
+                     br(),
+                     tags$li(
+                       tags$strong("Contraindications (Do Not Extrapolate): "), 
+                       "This model was not trained on, and should not be used for, patients meeting the following exclusion criteria:",
+                       tags$ul(
+                         tags$li("Prior history of head and neck irradiation (re-irradiation cases)."),
+                         tags$li("Edentulous patients."),
+                         tags$li("Primary tracheal cancer."),
+                         tags$li("Early-stage (T1-2, N0, M0) glottis cancer.")
+                       )
+                     ),
+                     br(),
+                     tags$li(
+                       tags$strong("Input Variables: "), 
+                       "Ensure accurate entry of the five required predictors: Primary Tumor Site, Mandibular Dose (D10cc in Gy), Smoking History (pack-years), Periodontal Condition, and Dental Insurance Status."
+                     )
+                   )
+                 )
         )
       )
     )
@@ -208,7 +251,7 @@ server <- function(input, output, session) {
     shap_suffix <- paste0("_t", shap_time_point)
     shap_cols   <- grep(shap_suffix, names(final_80grid_data), value = TRUE)
 
-    shap_neighbors     <- final_80grid_data[neighbor_idx, shap_cols, drop = FALSE]
+    shap_neighbors      <- final_80grid_data[neighbor_idx, shap_cols, drop = FALSE]
     shap_neighbors_mat <- as.matrix(shap_neighbors)
     shap_estimate_mat  <- t(shap_neighbors_mat) %*% wts
     shap_estimate      <- as.numeric(shap_estimate_mat)
@@ -256,6 +299,3 @@ server <- function(input, output, session) {
 
 # Run
 shinyApp(ui = ui, server = server)
-
-
-
