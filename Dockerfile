@@ -7,8 +7,10 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev && \
     rm -rf /var/lib/apt/lists/*
 
-# Step 1: Install heavy dependencies and core modeling packages first.
-# We install 'riskRegression' here along with its key dependencies.
+# FIX: Update 'xfun' and 'knitr' explicitly to prevent version conflicts.
+RUN R -e "install.packages(c('xfun', 'knitr'), repos='https://cran.rstudio.com/')"
+
+# Step 1: Install heavy dependencies and core modeling packages.
 RUN R -e "install.packages(c('survival', 'prodlim', 'riskRegression'), repos='https://cran.rstudio.com/')"
 
 # Step 2: Install the remaining visualization and UI packages.
