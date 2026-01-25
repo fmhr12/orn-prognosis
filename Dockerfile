@@ -1,14 +1,18 @@
 FROM rocker/shiny:4.4.2
 
-# Install additional system dependencies if needed.
+# Install additional system dependencies.
 RUN apt-get update && apt-get install -y \
     libcurl4-gnutls-dev \
     libssl-dev \
     libxml2-dev && \
     rm -rf /var/lib/apt/lists/*
 
-# Install extra R packages that are not already included in the image.
-RUN R -e "install.packages(c('shinythemes', 'survival', 'riskRegression', 'fastshap', 'shapviz', 'ggplot2', 'prodlim', 'gower', 'plotly'), repos='https://cran.rstudio.com/')"
+# Step 1: Install heavy dependencies and core modeling packages first.
+# We install 'riskRegression' here along with its key dependencies.
+RUN R -e "install.packages(c('survival', 'prodlim', 'riskRegression'), repos='https://cran.rstudio.com/')"
+
+# Step 2: Install the remaining visualization and UI packages.
+RUN R -e "install.packages(c('shinythemes', 'fastshap', 'shapviz', 'ggplot2', 'gower', 'plotly'), repos='https://cran.rstudio.com/')"
 
 # Copy the app files into the image.
 COPY . /app
